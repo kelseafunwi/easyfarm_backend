@@ -1,10 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head><title>Users</title></head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Home Page</title>
+</head>
 <body>
-<h1>List of Users</h1>
-<ul>
-    <li th:each="user : ${users}" th:text="${user.name}"></li>
-</ul>
+    <h1 th:text="${title}">Home Page</h1>
+    <p th:text="${content}">Welcome to EasyFarm! This is the home page.</p>
+    <h2>Users</h2>
+    <ul>
+        <li th:each="user : ${users}" th:text="${user.name}"></li>
+    </ul>
+    <a href="/about">About</a>
 </body>
 </html>
+
