@@ -20,22 +20,22 @@ public class CustomErrorController implements ErrorController {
         String errorMsg = "An unexpected error occurred";
 
         if (status != null) {
-            Integer statusCode = Integer.valueOf(status.toString());
+            int statusCode = Integer.parseInt(status.toString());
 
             if(statusCode == HttpStatus.NOT_FOUND.value()) {
                 errorPage = "error/404";
                 errorMsg = "Page not found";
-                log.warn("404 Error occurred. Path: " + request.getRequestURI());
+                log.warn("404 Error occurred. Path: {}", request.getRequestURI());
             }
             else if(statusCode == HttpStatus.FORBIDDEN.value()) {
                 errorPage = "error/403";
                 errorMsg = "Access denied";
-                log.warn("403 Error occurred. Path: " + request.getRequestURI());
+                log.warn("403 Error occurred. Path: {}", request.getRequestURI());
             }
             else if(statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
                 errorPage = "error/500";
                 errorMsg = "Internal server error";
-                log.error("500 Error occurred. Path: " + request.getRequestURI());
+                log.error("500 Error occurred. Path: {}", request.getRequestURI());
             }
 
             model.addAttribute("errorCode", statusCode);

@@ -21,7 +21,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 @Transactional
-public class UserService implements UserDetailsService {
+public class    UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -197,4 +197,5 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
         log.info("Successfully activated user with ID: {}", id);
     }
+
 }
