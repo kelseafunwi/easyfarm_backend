@@ -1,18 +1,20 @@
 package com.easyfarm.easyfarm.service;
 
+import com.easyfarm.easyfarm.dto.UserRegistrationDto;
 import com.easyfarm.easyfarm.enums.UserRole;
 import com.easyfarm.easyfarm.model.User;
 import com.easyfarm.easyfarm.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +23,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 @Transactional
-public class    UserService implements UserDetailsService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -70,7 +72,7 @@ public class    UserService implements UserDetailsService {
     }
 
     @Transactional
-    public User registerUser(User user) {
+    public User registerUser(@Valid UserRegistrationDto user) {
         log.debug("Registering new user with username: {}", user.getUsername());
 
         if (existsByUsername(user.getUsername())) {
@@ -89,10 +91,15 @@ public class    UserService implements UserDetailsService {
         }
 
         // Encode password
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setActive(true);
+        User newUser = new User();
+        newUser.setUsername(user.getUsername());
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        newUser.setEmail(user.getEmail());
+        newUser.setName(user.getName());
+        newUser.setRole(user.getRole());
+        newUser.setActive(true);
 
-        User savedUser = userRepository.save(user);
+        User savedUser = userRepository.save(newUser);
         log.info("Successfully registered user with ID: {}", savedUser.getId());
         return savedUser;
     }
@@ -105,14 +112,14 @@ public class    UserService implements UserDetailsService {
 
         // Check if username is being changed and if it's already taken
         if (!existingUser.getUsername().equals(userDetails.getUsername())
-            && existsByUsername(userDetails.getUsername())) {
+                && existsByUsername(userDetails.getUsername())) {
             log.error("Cannot update user. Username already exists: {}", userDetails.getUsername());
             throw new IllegalStateException("Username already exists");
         }
 
         // Check if email is being changed and if it's already taken
         if (!existingUser.getEmail().equals(userDetails.getEmail())
-            && existsByEmail(userDetails.getEmail())) {
+                && existsByEmail(userDetails.getEmail())) {
             log.error("Cannot update user. Email already exists: {}", userDetails.getEmail());
             throw new IllegalStateException("Email already exists");
         }
