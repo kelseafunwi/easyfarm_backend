@@ -1,17 +1,383 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${title}">Home Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title ?: 'Welcome to EasyFarm'}">Welcome to EasyFarm</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Merriweather:wght@300;400;700&display=swap');
+
+        :root {
+            --primary-color: #4CAF50; /* Green for farming */
+            --primary-hover-color: #45a049;
+            --secondary-color: #f9f9f9; /* Light background */
+            --text-color: #333;
+            --heading-font: 'Merriweather', serif;
+            --body-font: 'Poppins', sans-serif;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: var(--body-font);
+            margin: 0;
+            padding: 0;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background-color: var(--card-bg);
+            padding: 15px 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            font-family: var(--heading-font);
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .navbar-nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .navbar-nav a:hover, .navbar-nav a.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'); /* Replace with your farm image */
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .hero h1 {
+            font-family: var(--heading-font);
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+            margin-left: 10px;
+        }
+
+        .btn-secondary:hover {
+            background-color: white;
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* Content Sections */
+        .section {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .section-title {
+            font-family: var(--heading-font);
+            font-size: 2.5em;
+            color: var(--primary-color);
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary-color);
+            margin: 10px auto 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            text-align: left;
+        }
+
+        .feature-card {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .feature-card h3 {
+            font-family: var(--heading-font);
+            font-size: 1.5em;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        /* Call to Action Section */
+        .cta-section {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-family: var(--heading-font);
+            font-size: 2.2em;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #333;
+            color: #f1f1f1;
+            text-align: center;
+            padding: 30px 0;
+            font-size: 0.9em;
+        }
+
+        .footer p {
+            margin: 0;
+        }
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Thymeleaf specific content - example for user list if needed */
+        .user-list-section {
+            background-color: #e9e9e9;
+        }
+        .user-list-section ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .user-list-section li {
+            background-color: var(--card-bg);
+            margin: 10px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5em;
+            }
+            .hero p {
+                font-size: 1em;
+            }
+            .navbar .container {
+                flex-direction: column;
+            }
+            .navbar-nav {
+                margin-top: 15px;
+            }
+            .navbar-nav a {
+                margin: 5px 0;
+                display: block;
+                text-align: center;
+            }
+        }
+
+    </style>
 </head>
 <body>
-    <h1 th:text="${title}">Home Page</h1>
-    <p th:text="${content}">Welcome to EasyFarm! This is the home page.</p>
-    <h2>Users</h2>
-    <ul>
-        <li th:each="user : ${users}" th:text="${user.name}"></li>
-    </ul>
-    <a href="/about">About</a>
+
+<!-- Navigation Bar -->
+<nav class="navbar">
+    <div class="container">
+        <a href="/" class="navbar-brand">EasyFarm</a>
+        <div class="navbar-nav">
+            <a href="/" class="active">Home</a>
+            <a href="#about">About</a>
+            <a href="#features">Features</a>
+            <a th:href="@{/login}">Login</a>
+            <a th:href="@{/register}">Register</a> <!-- Assuming you have a /register route -->
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<header class="hero">
+    <h1 th:text="${title ?: 'Welcome to EasyFarm!'}">Welcome to EasyFarm!</h1>
+    <p th:text="${content ?: 'Streamline your agricultural operations with our intuitive and powerful farm management system. Plan, track, and optimize with ease.'}">
+        Streamline your agricultural operations with our intuitive and powerful farm management system. Plan, track, and optimize with ease.
+    </p>
+    <div>
+        <a th:href="@{/register}" class="btn btn-primary">Get Started</a>
+        <a th:href="@{/login}" class="btn btn-secondary">Login</a>
+    </div>
+</header>
+
+<!-- About Section -->
+<section id="about" class="section">
+    <div class="container">
+        <h2 class="section-title">About EasyFarm</h2>
+        <p style="max-width: 800px; margin: 0 auto 30px auto;">
+            EasyFarm is designed to simplify the complexities of modern farming. Whether you're managing crops, livestock,
+            or finances, our platform provides the tools you need to make informed decisions, improve efficiency,
+            and boost your farm's productivity. We believe in empowering farmers with technology that is both
+            powerful and easy to use.
+        </p>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="section" style="background-color: #fff;">
+    <div class="container">
+        <h2 class="section-title">Why Choose EasyFarm?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3><i class="fas fa-seedling"></i> Crop Management</h3>
+                <p>Track planting, growth stages, treatments, and harvest yields all in one place. Optimize your crop cycles for maximum output.</p>
+            </div>
+            <div class="feature-card">
+                <h3><i class="fas fa-tractor"></i> Resource Planning</h3>
+                <p>Manage equipment, inventory, and labor efficiently. Schedule tasks and allocate resources to keep your farm running smoothly.</p>
+            </div>
+            <div class="feature-card">
+                <h3><i class="fas fa-chart-line"></i> Financial Tracking</h3>
+                <p>Monitor income and expenses, generate reports, and gain clear insights into your farm's financial health.</p>
+            </div>
+            <div class="feature-card">
+                <h3><i class="fas fa-cloud-sun"></i> Weather Integration</h3>
+                <p>Access localized weather forecasts and historical data to make better-informed decisions for your daily operations.</p>
+            </div>
+            <div class="feature-card">
+                <h3><i class="fas fa-mobile-alt"></i> Mobile Accessible</h3>
+                <p>Manage your farm on the go. Our platform is designed to be accessible from your desktop, tablet, or smartphone.</p>
+            </div>
+            <div class="feature-card">
+                <h3><i class="fas fa-users"></i> Team Collaboration</h3>
+                <p>Assign tasks, share information, and collaborate effectively with your farm staff and partners.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Example: Displaying Users (if relevant for the home page) -->
+<!-- You can remove this section if it's not meant for the public landing page -->
+<th:block th:if="${users != null && !users.isEmpty()}">
+    <section class="section user-list-section">
+        <div class="container">
+            <h2 class="section-title">Our Community</h2>
+            <p>Meet some of the dedicated farmers using EasyFarm.</p>
+            <ul>
+                <li th:each="user : ${users}" th:text="${user.name}">User Name</li>
+            </ul>
+        </div>
+    </section>
+</th:block>
+
+<!-- Call to Action Section -->
+<section class="cta-section">
+    <div class="container">
+        <h2>Ready to Transform Your Farm Management?</h2>
+        <p>Join EasyFarm today and take control of your agricultural success.</p>
+        <a th:href="@{/register}" class="btn btn-secondary" style="border-color: white; color: white;">Sign Up Now</a>
+        <a th:href="@{/login}" class="btn btn-primary" style="margin-left:10px; background-color:white; color:var(--primary-color); border-color:white;">Access Your Dashboard</a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <p>&copy; <span th:text="${#dates.year(#dates.createNow())}">2024</span> EasyFarm. All Rights Reserved.</p>
+        <p>
+            <a href="/privacy-policy">Privacy Policy</a> | <a href="/terms-of-service">Terms of Service</a>
+        </p>
+    </div>
+</footer>
+
+<!-- Font Awesome for Icons (optional, but adds nice visuals to features) -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<!-- You can also download and host Font Awesome locally -->
+
 </body>
 </html>
-

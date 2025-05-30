@@ -1,5 +1,6 @@
 package com.easyfarm.easyfarm.controller;
 
+import com.easyfarm.easyfarm.dto.UserRegistrationDto;
 import com.easyfarm.easyfarm.model.User;
 import com.easyfarm.easyfarm.service.UserService;
 import jakarta.validation.Valid;
@@ -23,9 +24,12 @@ public class UserController {
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        model.addAttribute("user", new User());
+        model.addAttribute("userDto", new UserRegistrationDto());
+        // If you want to dynamically populate roles:
+        // model.addAttribute("userRoles", UserRole.values());
         return "register";
     }
+
 
     @PostMapping("/register")
     public String registerUser(@ModelAttribute("user") @Valid User user, BindingResult result, Model model) {
